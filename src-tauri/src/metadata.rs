@@ -26,6 +26,9 @@ use crate::db::Database;
 use crate::store::{load_settings, UserSettings};
 use crate::tag_edits::tag_edits;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct MetadataEntry {
     id: String, // format-specific tag key eg. for ID3v2, "TIT2"
