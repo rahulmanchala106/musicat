@@ -25,10 +25,11 @@ pub struct TagEdits {
     generation: AtomicU64,
     /// Track/album id -> generation of the last edit that touched it.
     last_edits: Mutex<HashMap<String, u64>>,
-    /// Striped by path. Lofty saves in place, so without these a read could
-    /// see a half-written file, and it's what makes "stamp, then read" atomic
-    /// with respect to a save. Held per file, never for a whole scan, so an
-    /// edit only ever waits for the read of the file it's about to change.
+    /// Striped by path, so unrelated files can share a lock. Lofty saves in
+    /// place, so without these a read could see a half-written file, and it's
+    /// what makes "stamp, then read" atomic with respect to a save. Held for
+    /// one read or save, never a whole scan, so an edit only waits for reads
+    /// in flight on its own stripe. Only `read_file` callers are covered.
     file_locks: Vec<RwLock<()>>,
 }
 
