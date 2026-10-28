@@ -375,6 +375,12 @@
             console.log("To reimport: ", toImport);
 
             if (toImport) {
+                // Even on error: with several tracks, the ones that did get
+                // written still need their new values in the library.
+                if (toImport.songs.length) {
+                    await reImport(toImport);
+                }
+
                 if (toImport.error) {
                     console.error("Error writing metadata: ", toImport.error);
                     // Show error
@@ -382,8 +388,6 @@
                     // Roll back to current artwork
                     rollbackArtwork();
                 } else {
-                    reImport(toImport);
-
                     toast.success("Successfully written metadata!", {
                         position: "top-right",
                     });
